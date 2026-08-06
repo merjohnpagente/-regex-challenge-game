@@ -187,6 +187,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 28px;
+  font-weight: 700;
   color: #fff;
   box-shadow: 0 14px 38px rgba(108, 92, 231, 0.5);
 }
