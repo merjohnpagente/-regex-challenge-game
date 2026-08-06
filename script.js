@@ -40,6 +40,15 @@
     { pattern: "^[bcdfghjklmnpqrstvwxyz]{4}$", hint: "brst" }
   ];
 
+  /* ============ SVG ICONS ============ */
+  var ICON_CHECK = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/></svg>';
+  var ICON_X    = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9 9l6 6M15 9l-6 6"/></svg>';
+  var ICON_BULB = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"/></svg>';
+  var ICON_TROPHY = '<svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6a7 0 0 0 12 0V2z"/></svg>';
+  var ICON_STAR  = '<svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.8 6.1.2-4.6 4 1.4 6-4.8-2.7L7 19l1.4-6-4.6-4 6.1-.2z"/></svg>';
+  var ICON_THUMB = '<svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 10v12"/><path d="M6 20h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2h-2.8a2 2 0 0 1-1.8-1.2L12 2.6a3 3 0 0 0-3 3.2"/></svg>';
+  var ICON_BOOK  = '<svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>';
+
   /* ============ STATE ============ */
   const state = {
     ongoing: false,
@@ -125,7 +134,12 @@
   function showFeedback(type, message) {
     const badge = document.createElement("span");
     badge.className = "feedback-badge";
-    badge.textContent = message;
+    const icon = document.createElement("span");
+    icon.className = "feedback-icon";
+    icon.innerHTML = type === "correct" ? ICON_CHECK : ICON_X;
+    const text = document.createElement("span");
+    text.textContent = message;
+    badge.append(icon, text);
     el.feedback.className = "feedback " + type;
     el.feedbackDetail.replaceChildren(badge);
   }
@@ -265,8 +279,8 @@
   /* ============ HINT & SKIP ============ */
   function showHint() {
     if (!state.ongoing || !state.currentChallenge) return;
-    el.hintLine.textContent =
-      `💡 Hint: a matching string could be: ${state.currentChallenge.hint}`;
+    el.hintLine.innerHTML =
+      ICON_BULB + ' <span>Hint: a matching string could be: <strong>' + state.currentChallenge.hint + '</strong></span>';
     el.hintLine.classList.remove("hidden");
   }
 
@@ -310,19 +324,19 @@
     const ratio = total > 0 ? state.correct / total : 0;
 
     if (ratio === 1 && state.correct === state.totalRounds) {
-      el.resultEmoji.textContent = "🏆";
+      el.resultEmoji.innerHTML = ICON_TROPHY;
       el.resultMessage.textContent =
         "Perfect game! You matched every single pattern flawlessly.";
     } else if (ratio >= 0.7) {
-      el.resultEmoji.textContent = "🎉";
+      el.resultEmoji.innerHTML = ICON_STAR;
       el.resultMessage.textContent =
         "Great job! You really know your way around regular expressions.";
     } else if (ratio >= 0.4) {
-      el.resultEmoji.textContent = "👍";
+      el.resultEmoji.innerHTML = ICON_THUMB;
       el.resultMessage.textContent =
         "Not bad! Practice a bit more and you will master the patterns.";
     } else {
-      el.resultEmoji.textContent = "📚";
+      el.resultEmoji.innerHTML = ICON_BOOK;
       el.resultMessage.textContent =
         "Keep practicing — every great regex wizard started somewhere!";
     }

@@ -77,6 +77,4 @@ All game settings are constants near the top of `script.js`:
 
 ## 👥 Group Members
 
-- Name 1
-- Name 2
-- Name 3
+- Merjohn Pagente
