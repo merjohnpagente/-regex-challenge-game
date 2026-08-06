@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Regex Challenge Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-decor" aria-hidden="true">
+    <span class="orb orb-1"></span>
+    <span class="orb orb-2"></span>
+    <span class="orb orb-3"></span>
+  </div>
+
+  <main class="app">
+    <!-- WELCOME SCREEN -->
+    <section id="screen-welcome" class="screen active fade-in">
+      <div class="card welcome-card">
+        <p class="chip">⚡ HTML &bull; CSS &bull; JavaScript only</p>
+
+        <div class="badge-wrap">
+          <div class="logo-badge">/^_^/</div>
+          <span class="pulse-ring" aria-hidden="true"></span>
+        </div>
+
+        <h1 class="title hero-title">Regex Challenge <span class="grad-text">Game</span></h1>
+        <p class="tagline">Decode the pattern. Type the match.</p>
+
+        <div class="code-window" aria-hidden="true">
+          <div class="code-bar">
+            <span class="dot r"></span>
+            <span class="dot y"></span>
+            <span class="dot g"></span>
+            <span class="code-file">regex.js</span>
+          </div>
+          <div class="code-body">
+            <span class="code-kw">const</span> <span class="code-kw">regex</span>
+            <span class="code-delim">=</span> <span class="code-delim">/</span><span id="code-text" class="code-regex"></span><span class="code-delim">/</span><span id="code-cursor" class="code-cursor">▍</span>
+            <br />
+            <span id="code-blurb" class="code-blurb">&nbsp;</span>
+          </div>
+        </div>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <span class="feature-ico">🎲</span>
+            <span class="feature-title">Random rounds</span>
+            <span class="feature-desc">A new regex every turn</span>
+          </div>
+          <div class="feature-card">
+            <span class="feature-ico">⌨️</span>
+            <span class="feature-title">Full match</span>
+            <span class="feature-desc">Type what the pattern matches</span>
+          </div>
+          <div class="feature-card">
+            <span class="feature-ico">🕒</span>
+            <span class="feature-title">30 seconds</span>
+            <span class="feature-desc">Beat the timer each round</span>
+          </div>
+          <div class="feature-card">
+            <span class="feature-ico">💎</span>
+            <span class="feature-title">+10 pts</span>
+            <span class="feature-desc">Minus 1 per second taken</span>
+          </div>
+        </div>
+
+        <button id="btn-start" class="btn btn-primary start-btn"><span class="play-ico">▶</span> Start Game</button>
+        <p class="footnote">Group project &bull; HTML &bull; CSS &bull; JavaScript</p>
+      </div>
+    </section>
+
+    <!-- GAME SCREEN -->
+    <section id="screen-game" class="screen">
+      <header class="hud">
+        <div class="hud-item">
+          <span class="hud-label">Challenge</span>
+          <span id="hud-round" class="hud-value">1 / 1</span>
+        </div>
+        <div class="hud-timer">
+          <div id="timer-ring" class="timer-ring">
+            <span id="timer-digit" class="timer-digit">30</span>
+          </div>
+          <span class="hud-label timer-label">seconds left</span>
+        </div>
+        <div class="hud-item">
+          <span class="hud-label">Score</span>
+          <span id="hud-score" class="hud-value score">0</span>
+        </div>
+      </header>
+
+      <div class="card game-card">
+        <p class="prompt">Type a string that matches this pattern:</p>
+        <div id="regex-box" class="regex-box">
+          <span id="regex-display" class="regex-display"></span>
+        </div>
+
+        <div id="feedback" class="feedback" role="status">
+          <span id="feedback-detail"></span>
+        </div>
+
+        <form id="answer-form" autocomplete="off">
+          <input
+            type="text"
+            id="answer-input"
+            class="answer-input"
+            placeholder="Type your answer here…"
+            spellcheck="false"
+            autocomplete="off"
+            autocapitalize="off"
+          />
+          <div class="btn-row">
+            <button type="button" id="btn-hint" class="btn btn-ghost">💡 Hint</button>
+            <button type="button" id="btn-skip" class="btn btn-ghost">Skip</button>
+            <button type="submit" id="btn-check" class="btn btn-primary">Check Answer</button>
+          </div>
+        </form>
+        <p id="hint-line" class="hint-line hidden"></p>
+      </div>
+    </section>
+
+    <!-- RESULTS SCREEN -->
+    <section id="screen-results" class="screen">
+      <div class="card results-card">
+        <div id="emoji-result" class="result-emoji">🏆</div>
+        <h2 class="title">Game Over!</h2>
+        <p id="result-message" class="result-message"></p>
+
+        <div class="stats-grid">
+          <div class="stat">
+            <span class="stat-value" id="stat-score">0</span>
+            <span class="stat-label">Final Score</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" id="stat-correct">0</span>
+            <span class="stat-label">Correct</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" id="stat-incorrect">0</span>
+            <span class="stat-label">Missed / Skipped</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value" id="stat-best-streak">0</span>
+            <span class="stat-label">Best Streak</span>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button id="btn-play-again" class="btn btn-primary">Play Again</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
