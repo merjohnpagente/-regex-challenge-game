@@ -243,9 +243,10 @@
   function handleIncorrect(message) {
     state.incorrect += 1;
     state.streak = 0;
-    stopTimer();
     showFeedback("incorrect", message);
     shakeRegexBox();
+    el.answerInput.value = "";
+    el.answerInput.focus();
   }
 
   function onTimeUp() {
@@ -342,9 +343,17 @@
     }
   }
 
+  function goHome() {
+    stopTimer();
+    state.ongoing = false;
+    state.timer = null;
+    showScreen("welcome");
+  }
+
   /* ============ EVENT LISTENERS ============ */
   $("btn-start").addEventListener("click", startGame);
   $("btn-play-again").addEventListener("click", startGame);
+  $("btn-go-home").addEventListener("click", goHome);
   $("btn-hint").addEventListener("click", showHint);
   $("btn-skip").addEventListener("click", skipChallenge);
   $("answer-form").addEventListener("submit", handleSubmit);
