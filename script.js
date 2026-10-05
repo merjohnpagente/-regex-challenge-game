@@ -90,7 +90,10 @@
     statScore: $("stat-score"),
     statCorrect: $("stat-correct"),
     statIncorrect: $("stat-incorrect"),
-    statStreak: $("stat-best-streak")
+    statStreak: $("stat-best-streak"),
+    hudStreak: $("hud-streak"),
+    hudStreakN: $("hud-streak-n"),
+    progressFill: $("round-progress-fill")
   };
 
   /* ============ NAVIGATION ============ */
@@ -119,6 +122,8 @@
     el.regexDisplay.textContent = state.currentChallenge.pattern;
     el.hudRound.textContent = `${state.round} / ${state.totalRounds}`;
     el.hudScore.textContent = state.score;
+    updateStreakChip();
+    updateProgress();
     el.answerInput.value = "";
     el.hintLine.classList.add("hidden");
     el.hintLine.textContent = "";
@@ -129,6 +134,46 @@
   function clearFeedback() {
     el.feedback.className = "feedback";
     el.feedbackDetail.textContent = "";
+  }
+
+  function updateStreakChip() {
+    if (state.streak >= 2) {
+      el.hudStreakN.textContent = state.streak;
+      el.hudStreak.classList.remove("hidden");
+    } else {
+      el.hudStreak.classList.add("hidden");
+    }
+  }
+
+  function updateProgress() {
+    el.progressFill.style.width =
+      `${(state.round / state.totalRounds) * 100}%`;
+  }
+
+  function bumpScore() {
+    el.hudScore.classList.remove("bump");
+    void el.hudScore.offsetWidth;
+    el.hudScore.classList.add("bump");
+  }
+
+  function celebrate() {
+    const colors = ["#6c5ce7", "#00d2ff", "#ffd86b", "#ff5b9a", "#2ecc71"];
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight * 0.35;
+    for (let i = 0; i < 40; i++) {
+      const dot = document.createElement("span");
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 120 + Math.random() * 320;
+      dot.className = "burst-dot";
+      dot.style.left = cx + "px";
+      dot.style.top = cy + "px";
+      dot.style.setProperty("--x", Math.cos(angle) * dist + "px");
+      dot.style.setProperty("--y", Math.sin(angle) * dist + "px");
+      dot.style.setProperty("--size", 6 + Math.random() * 10 + "px");
+      dot.style.setProperty("--color", colors[i % colors.length]);
+      dot.addEventListener("animationend", () => dot.remove());
+      document.body.append(dot);
+    }
   }
 
   function showFeedback(type, message) {
@@ -236,6 +281,8 @@
       `Correct! +${points} pts (answered in ${suffix})`
     );
     el.hudScore.textContent = state.score;
+    bumpScore();
+    updateStreakChip();
 
     setTimeout(nextChallenge, 1400);
   }
@@ -316,6 +363,10 @@
   }
 
   function renderResults() {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduced && state.correct / (state.correct + state.incorrect || 1) >= 0.7) {
+      setTimeout(celebrate, 350);
+    }
     el.statScore.textContent = state.score;
     el.statCorrect.textContent = state.correct;
     el.statIncorrect.textContent = state.incorrect;
